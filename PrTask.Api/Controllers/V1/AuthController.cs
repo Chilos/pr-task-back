@@ -66,7 +66,7 @@ namespace PrTask.Api.Controllers.V1
                 return BadRequest("This login not found");
             if (user.Password != request.Password)
                 return BadRequest("Password is not valid");
-            return Ok(new {accessToken = "asuklhgdfkasdhf", refreshToken = "serfgsadfgerdg"});
+            return Ok(new {accessToken = "123123qweqwe123", refreshToken = "serfgsadfgerdg"});
         }
     }
 }
