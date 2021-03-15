@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <Nullable>enable</Nullable>
+        <Nullable>disable</Nullable>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -30,6 +30,7 @@
     <ItemGroup>
       <Folder Include="Contracts\V1\Records\Auth\Response" />
       <Folder Include="Domain\Records" />
+      <Folder Include="Services" />
     </ItemGroup>
 
 </Project>

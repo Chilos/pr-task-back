@@ -7,5 +7,6 @@ namespace PrTask.DAL.Repositories.Abstract
     public interface IUserRepository
     {
         Task<Guid> UpdateUsers(UserEnt user);
+        Task<UserEnt> SelectUserByLogin(string login);
     }
 }

@@ -62,7 +62,7 @@ namespace PrTask.Api.Models
         /// <summary>
         /// Конфигурации
         /// </summary>
-        public static IConfiguration Configuration { get; private set; }
+        public static IConfiguration? Configuration { get; private set; }
         /// <summary>
         /// Инициализация класса настроек
         /// </summary>
