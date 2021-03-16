@@ -15,11 +15,11 @@ namespace PrTask.DAL.Repositories
             _context = context;
         }
 
-        public async Task<Guid> UpdateUsers(UserEnt user)
+        public async Task<UserEnt> UpdateUsers(UserEnt user)
         {
             await _context.UserEnt.AddAsync(user);
             await _context.SaveChangesAsync();
-            return user.Id;
+            return user;
         }
         
         public async Task<UserEnt> SelectUserByLogin(string login)

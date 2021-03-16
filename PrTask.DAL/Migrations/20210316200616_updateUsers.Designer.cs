@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrTask.DAL;
 
 namespace PrTask.DAL.Migrations
 {
     [DbContext(typeof(PrTaskSqlContext))]
-    partial class PrTaskSqlContextModelSnapshot : ModelSnapshot
+    [Migration("20210316200616_updateUsers")]
+    partial class updateUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

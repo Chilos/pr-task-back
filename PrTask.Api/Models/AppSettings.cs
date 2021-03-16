@@ -18,11 +18,17 @@ namespace PrTask.Api.Models
             /// </summary>
             public static string SecretKey { get; private set; }
             /// <summary>
+            /// Время жизни токена авторизации
+            /// </summary>
+            public static int LifespanMinutes { get; private set; }
+            /// <summary>
             /// Инициализация cекции настроек аутентификации 
             /// </summary>
             public static void Init()
             {
+                if (Configuration == null) throw new ArgumentNullException(nameof(Configuration));
                 SecretKey = Configuration["Auth:SecretKey"];
+                LifespanMinutes = Configuration.GetValue<int>("Auth:LifespanMinutes");
             }
         }
         
@@ -54,6 +60,7 @@ namespace PrTask.Api.Models
             public static  int CommandTimeoutSeconds { get; private set; }
             internal static void Init()
             {
+                if (Configuration == null) throw new ArgumentNullException(nameof(Configuration));
                 ConnectionString = Configuration["Database:ConnectionString"];
                 CommandTimeoutSeconds = Configuration.GetValue<int>("Database:CommandTimeoutSeconds");
             }

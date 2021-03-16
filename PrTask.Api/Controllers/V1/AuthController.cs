@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrTask.Api.Contracts.V1;
 using PrTask.Api.Contracts.V1.Records.Auth.Request;
+using PrTask.Api.Models;
+using PrTask.Api.Services.Abstract;
 using PrTask.DAL.Repositories.Abstract;
 
 namespace PrTask.Api.Controllers.V1
@@ -13,13 +15,15 @@ namespace PrTask.Api.Controllers.V1
     public class AuthController: Controller
     {
         private readonly IUserRepository _userRepository;
+        private readonly IAuthService _auth;
 
         /// <summary>
         /// Конструктор
         /// </summary>
-        public AuthController(IUserRepository userRepository)
+        public AuthController(IUserRepository userRepository, IAuthService auth)
         {
             _userRepository = userRepository;
+            _auth = auth;
         }
 
         /// <summary>
@@ -35,19 +39,18 @@ namespace PrTask.Api.Controllers.V1
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (!ModelState.IsValid)
-            {
-                return BadRequest("Model is not valid");
-            }
+                return BadRequest(ModelState);
+            
             var user = await _userRepository.SelectUserByLogin(request.Email);
             if (user != null)
                 return BadRequest("This email already exists");
             user = await _userRepository.SelectUserByLogin(request.Username);
             if (user != null)
                 return BadRequest("This username already exists");
-            var userId = await _userRepository.UpdateUsers(new()
-                {Email = request.Email, Password = request.Password, Username = request.Username});
+            var savedUser = await _userRepository.UpdateUsers(new()
+                {Email = request.Email, Password = _auth.HashPassword(request.Password), Username = request.Username, RefreshToken = _auth.GenerateRefreshToken()});
 
-            return Ok(userId);
+            return Ok(_auth.GetAuthData(savedUser.Id, savedUser.Email, savedUser.Username));
         }
         
         /// <summary>
@@ -58,15 +61,18 @@ namespace PrTask.Api.Controllers.V1
         [HttpPost(ApiRoutes.Authentication.Login)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var user = await _userRepository.SelectUserByLogin(request.Login);
             if (user == null)
-                return BadRequest("This login not found");
-            if (user.Password != request.Password)
-                return BadRequest("Password is not valid");
-            return Ok(new {accessToken = "123123qweqwe123", refreshToken = "serfgsadfgerdg"});
+                return Unauthorized("This login not found");
+            if (!_auth.VerifyPassword(request.Password, user.Password))
+                return Unauthorized("Invalid password");
+            return Ok(_auth.GetAuthData(user.Id, user.Email, user.Username));
         }
     }
 }

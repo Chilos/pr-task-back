@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PrTask.Api.Models;
+using PrTask.Api.Services;
+using PrTask.Api.Services.Abstract;
 using PrTask.Common.Extension.Application;
 using PrTask.DAL;
 using PrTask.DAL.Repositories;
@@ -49,6 +51,7 @@ namespace PrTask.Api
                 }
             );
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAuthService, AuthService>();
             services.AddAuthenticateService(AppSettings.Auth.SecretKey);
             services.AddSwaggerService();
             services.AddHealthChecks();
