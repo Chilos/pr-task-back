@@ -67,6 +67,7 @@ namespace PrTask.Api.Controllers.V1
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            
             var user = await _userRepository.SelectUserByLogin(request.Login);
             if (user == null)
                 return Unauthorized("This login not found");
